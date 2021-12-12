@@ -6,7 +6,7 @@ class DoughnutRedis
   end
 
   def save_token(token)
-    @client.set(get_token_key(token.token), token.to_json)
+    @client.set(get_token_key(token.token), token.to_json_private)
   end
 
   def get_token(token_string)

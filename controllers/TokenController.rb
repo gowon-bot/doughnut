@@ -29,7 +29,7 @@ class TokenController < BaseController
 
     token.save_to_redis
 
-    token.as_hash.merge({ discord_user: me_response_body }).to_json
+    token.as_public_hash.merge({ discord_user: me_response_body }).to_json
   end
 
   def destroy(request)

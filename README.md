@@ -8,6 +8,7 @@ This project is part of Gowon bot ([main repo](https://github.com/jivison/gowon)
 ## Running yourself
 
 Copy `services.example.yml` to `services.yml` and fill out the services.
+
 Copy `.env.example` to `.env` and fill out the missing variables.
 
 ## Structure
