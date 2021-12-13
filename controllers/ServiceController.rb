@@ -12,15 +12,16 @@ class ServiceController < BaseController
   end
 
   def request(request, params)
-    halt 400, { message: "That service doesn't exist" } unless is_valid_service? params[:service]
+    halt 400, { message: "That service doesn't exist" } unless is_valid_service?(params[:service])
+
+    path = '/' + params['splat'][0]
+    service = get_service params[:service]
 
     token = get_token_from_header request.env[request_header 'authorization']
 
-    halt 401, { message: 'Invalid token' } if token.nil?
+    halt 401, { message: 'Invalid token' } if token.nil? && token_required?(service, path)
 
-    service = get_service params[:service]
-
-    @request_forwarder.forward request, service['url'] + '/' + params['splat'][0], token
+    @request_forwarder.forward request, service['url'] + path, token, service
   end
 
   private
@@ -45,6 +46,12 @@ class ServiceController < BaseController
     return nil if !token || token.expired?
 
     token
+  end
+
+  def token_required?(service, path)
+    token_required_paths = service['requireTokenFor'] || []
+
+    token_required_paths.any? { |p| path.start_with? p }
   end
 end
 

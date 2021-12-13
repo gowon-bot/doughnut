@@ -2,10 +2,10 @@ require 'sinatra'
 require 'httparty'
 
 class RequestForwarder
-  def forward(request, uri, token)
+  def forward(request, uri, token, service)
     headers = get_headers request
 
-    headers = set_custom_headers headers, token
+    headers = set_custom_headers headers, token, service
 
     method = get_method(request)
 
@@ -33,8 +33,12 @@ class RequestForwarder
     new_hash
   end
 
-  def set_custom_headers(headers, token)
-    headers['DOUGHNUT-DISCORD-ID'] = token.discord_id
+  def set_custom_headers(headers, token, service)
+    headers['Authorization'] = ENV[service['passwordEnv']] if service['passwordEnv']
+
+    return headers if token.nil?
+
+    headers['Doughnut-Discord-Id'] = token.discord_id
 
     headers
   end

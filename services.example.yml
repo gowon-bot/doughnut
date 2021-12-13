@@ -2,3 +2,7 @@
 services:
   my_service_name:
     url: http://localhost:3000
+    # The following properties are optional
+    requireTokenFor:
+      - paths that require a token (checks if path starts with it)
+    passwordEnv: "Environment variable where the password for this service lives"
