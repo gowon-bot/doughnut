@@ -17,13 +17,13 @@ setup
 token_controller = TokenController.new
 service_controller = ServiceController.new
 
-set :port, ENV['PORT']
-
 set :allow_origin, '*'
 set :allow_methods, 'GET,POST,OPTIONS,HEAD,PATCH'
 set :allow_headers, 'Authorization,Content-Type'
 
 set :public_folder, 'public'
+
+set :port, ENV['PORT']
 
 before do
   content_type 'application/json'
@@ -45,7 +45,29 @@ post '/token/destroy' do
   halt_if_error { token_controller.destroy request }
 end
 
+# Service
+
+get '/services/:service/*' do
+  halt_if_error { service_controller.request(request, params) }
+end
+
 post '/services/:service/*' do
+  halt_if_error { service_controller.request(request, params) }
+end
+
+options '/services/:service/*' do
+  halt_if_error { service_controller.request(request, params) }
+end
+
+patch '/services/:service/*' do
+  halt_if_error { service_controller.request(request, params) }
+end
+
+head '/services/:service/*' do
+  halt_if_error { service_controller.request(request, params) }
+end
+
+delete '/services/:service/*' do
   halt_if_error { service_controller.request(request, params) }
 end
 
