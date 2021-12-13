@@ -23,6 +23,8 @@ set :allow_origin, '*'
 set :allow_methods, 'GET,POST,OPTIONS,HEAD,PATCH'
 set :allow_headers, 'Authorization,Content-Type'
 
+set :public_folder, 'public'
+
 before do
   content_type 'application/json'
 end
@@ -45,4 +47,9 @@ end
 
 post '/services/:service/*' do
   halt_if_error { service_controller.request(request, params) }
+end
+
+not_found do
+  status 404
+  redirect '/oops.html'
 end
