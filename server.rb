@@ -45,6 +45,10 @@ post '/token/destroy' do
   halt_if_error { token_controller.destroy request }
 end
 
+post '/token/refresh' do
+  halt_if_error { token_controller.refresh request }
+end
+
 # Service
 
 get '/services/:service/*' do

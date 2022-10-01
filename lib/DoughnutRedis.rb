@@ -16,7 +16,8 @@ class DoughnutRedis
 
     stored_token = JSON.parse json
 
-    Token.new(token_string, stored_token['code'], stored_token['discord_id'])
+    Token.new(token_string, stored_token['discord_id'], stored_token['refresh_token'],
+              Time.at(stored_token['expires_at'] || 0))
   end
 
   def destroy_token(token_string)

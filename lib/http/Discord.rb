@@ -3,18 +3,18 @@ require 'httparty'
 class Discord
   include HTTParty
 
-  base_uri 'https://discord.com/api/v8'
+  base_uri 'https://discord.com/api/v10/'
 
   def initialize
     @options = {}
   end
 
   def request_token(code)
-    self.class.post('/oauth2/token', { headers: token_headers, body: token_body(code, 'authorization_code') })
+    self.class.post('/oauth2/token', { headers: token_headers, body: request_token_body(code) })
   end
 
-  def refresh_token(code)
-    self.class.post('/outh2/token', { headers: token_headers, body: token_body(code, 'refresh_token') })
+  def refresh_token(refresh_token)
+    self.class.post('/oauth2/token', { headers: token_headers, body: refresh_token_body(refresh_token) })
   end
 
   def me(token)
@@ -27,14 +27,20 @@ class Discord
     { 'Content-Type' => 'application/x-www-form-urlencoded' }
   end
 
-  def token_body(code, grant_type)
+  def base_token_body(grant_type)
     {
       client_id: ENV['DISCORD_CLIENT_ID'],
       client_secret: ENV['DISCORD_CLIENT_SECRET'],
-      redirect_uri: ENV['DISCORD_REDIRECT_URI'],
-      grant_type: grant_type,
-      code: code
+      grant_type: grant_type
     }
+  end
+
+  def request_token_body(code)
+    base_token_body('authorization_code').merge({ redirect_uri: ENV['DISCORD_REDIRECT_URI'], code: code })
+  end
+
+  def refresh_token_body(refresh_token)
+    base_token_body('refresh_token').merge({ refresh_token: refresh_token })
   end
 
   def options(token)

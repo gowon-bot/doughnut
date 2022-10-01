@@ -2,6 +2,7 @@ require_relative './BaseController'
 require_relative '../lib/http/Discord'
 require_relative '../lib/TokenGenerator'
 require_relative '../lib/DoughnutRedis'
+require_relative '../lib/Token'
 
 class TokenController < BaseController
   def initialize
@@ -15,21 +16,17 @@ class TokenController < BaseController
 
     response = @discord.request_token params['code']
 
-    response_body = parse_json response
+    handle_access_token_response(response)
+  end
 
-    access_token = response_body['access_token']
+  def refresh(request)
+    token = Token.from_auth_header(@redis, request.env[request_header('authorization')])
 
-    me_response = @discord.me(access_token)
+    halt 401, { message: 'Invalid token' } if token.nil? or token.refresh_token.nil?
 
-    me_response_body = parse_json me_response
+    response = @discord.refresh_token(token.refresh_token)
 
-    halt 401, { message: 'Invalid discord code!' } if me_response_body['id'].nil?
-
-    token = @token_generator.build_token params['code'], me_response_body['id']
-
-    token.save_to_redis
-
-    token.as_public_hash.merge({ discord_user: me_response_body }).to_json
+    handle_access_token_response(response)
   end
 
   def destroy(request)
@@ -42,5 +39,25 @@ class TokenController < BaseController
     @redis.destroy_token token
 
     204
+  end
+
+  private
+
+  def handle_access_token_response(response)
+    response_body = parse_json response
+
+    access_token = response_body['access_token']
+
+    me_response = @discord.me(access_token)
+
+    me_response_body = parse_json me_response
+
+    halt 401, { message: 'Invalid discord code or refresh_token!' } if me_response_body['id'].nil?
+
+    token = @token_generator.build_token me_response_body['id'], response_body
+
+    token.save_to_redis
+
+    token.as_hash_with_discord_user(me_response_body).to_json
   end
 end

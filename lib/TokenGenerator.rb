@@ -4,8 +4,13 @@ require_relative './DoughnutRedis'
 require_relative './Token'
 
 class TokenGenerator
-  def build_token(code, discord_id)
-    Token.new(generate_token, code, discord_id)
+  def build_token(discord_id, response)
+    Token.new(
+      generate_token,
+      discord_id,
+      response['refresh_token'],
+      Time.now + response['expires_in']
+    )
   end
 
   private

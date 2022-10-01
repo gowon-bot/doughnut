@@ -3,6 +3,7 @@ require 'yaml'
 require_relative './BaseController'
 require_relative '../lib/DoughnutRedis'
 require_relative '../lib/RequestForwarder'
+require_relative '../lib/Token'
 
 class ServiceController < BaseController
   def initialize
@@ -17,7 +18,7 @@ class ServiceController < BaseController
     path = '/' + params['splat'][0]
     service = get_service params[:service]
 
-    token = get_token_from_header request.env[request_header 'authorization']
+    token = Token.from_auth_header(@redis, request.env[request_header('authorization')])
 
     halt 401, { message: 'Invalid token' } if token.nil? && token_required?(service, path)
 
@@ -32,20 +33,6 @@ class ServiceController < BaseController
 
   def get_service(service_string)
     @services[service_string]
-  end
-
-  def get_token_from_header(header)
-    return nil if header.nil?
-
-    auth = header.split(/ /)
-
-    return nil unless auth[0] == 'Bearer' && !auth[1].nil?
-
-    token = @redis.get_token(auth[1])
-
-    return nil if !token || token.expired?
-
-    token
   end
 
   def token_required?(service, path)
