@@ -13,7 +13,10 @@ GEM
     multi_xml (0.6.0)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
+    nio4r (2.7.3)
     prettier (2.0.0)
+    puma (6.4.2)
+      nio4r (~> 2.0)
     rack (2.2.3)
     rack-protection (2.1.0)
       rack
@@ -34,6 +37,7 @@ GEM
     tilt (2.0.10)
 
 PLATFORMS
+  arm64-darwin-23
   x86_64-darwin-20
 
 DEPENDENCIES
@@ -41,10 +45,11 @@ DEPENDENCIES
   dotenv (~> 2.7)
   httparty (~> 0.20.0)
   prettier
+  puma
   redis (~> 4.5)
   sinatra
   sinatra-contrib (~> 2.1)
   sinatra-cors (~> 1.2)
 
 BUNDLED WITH
-   2.2.33
+   2.4.22

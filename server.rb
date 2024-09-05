@@ -24,6 +24,7 @@ set :allow_headers, 'Authorization,Content-Type'
 set :public_folder, 'public'
 
 set :port, ENV['PORT']
+set :server, 'puma'
 
 before do
   content_type 'application/json'
