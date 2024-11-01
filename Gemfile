@@ -8,6 +8,8 @@ gem 'prettier'
 gem 'sinatra'
 gem 'puma'
 
+gem 'rack-cors'
+
 gem 'sinatra-contrib', '~> 2.1'
 
 gem 'httparty', '~> 0.20.0'

@@ -2,7 +2,7 @@ require 'redis'
 
 class DoughnutRedis
   def initialize
-    @client = Redis.new
+    @client = Redis.new(host: ENV['REDIS_HOST'], port: ENV['REDIS_PORT'])
   end
 
   def save_token(token)
