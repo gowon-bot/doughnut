@@ -28,18 +28,24 @@ class RequestForwarder
   def get_headers(request)
     new_hash = {}
 
-    request.env.each { |key, value| new_hash[key.sub('HTTP_', '').gsub('_', '-')] = value if key.upcase == key }
+    request.env.each { |key, value| new_hash[key.sub('HTTP_', '').gsub('_', '-').upcase] = value if key.upcase == key }
 
     new_hash
   end
 
   def set_custom_headers(headers, token, service)
-    headers['Authorization'] = ENV[service['passwordEnv']] if service['passwordEnv']
+    headers['AUTHORIZATION'] = ENV[service['passwordEnv']] if service['passwordEnv']
+    headers['HOST'] = get_host service unless headers['HOST'].nil?
 
     return headers if token.nil?
 
-    headers['Doughnut-Discord-Id'] = token.discord_id
+    headers['DOUGHNUT-DISCORD-ID'] = token.discord_id
+
 
     headers
+  end
+
+  def get_host(service)
+    service['url'].split('/')[2].split(':')[0]
   end
 end
