@@ -1,4 +1,4 @@
-# Doughnut
+<img src="Doughnut Banner.png" alt="Doughnut" width="500"/>
 
 _心には君形の穴が空いてるの_
 _Just like a doughnut_
@@ -27,5 +27,5 @@ For forwarded requests, Doughnut adds a custom header, `Doughnut-Discord-Id`, wh
 
 Somethings broken? Just curious how something works?
 
-Feel free to shoot me a Discord dm at `john!#2527`
+Feel free to shoot me a Discord dm at `@abbyfour`
 or join the support server! https://discord.gg/9Vr7Df7TZf
